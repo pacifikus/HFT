@@ -1,0 +1,1 @@
+python src/data/make_dataset.py -i "data/raw/train_data.parquet" -o "data/processed/result.parquet"

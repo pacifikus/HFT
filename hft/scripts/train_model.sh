@@ -1,0 +1,1 @@
+python src/models/train_model.py -i "data/processed/result.parquet" -o "models"
