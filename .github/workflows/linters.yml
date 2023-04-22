@@ -1,4 +1,4 @@
-ame: Code style
+name: Code style
 on:
   push:
   pull_request:
