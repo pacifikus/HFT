@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import click
 import logging
+
+import click
 import pandas as pd
 
 
@@ -16,12 +17,12 @@ def drop_outliers(train_data):
         _mean, _std = train_data[col].mean(), train_data[col].std()
 
         temp_df = train_data.loc[
-            (train_data[col] > _mean + _std * 70) |
-            (train_data[col] < _mean - _std * 70)
+            (train_data[col] > _mean + _std * 70)
+            | (train_data[col] < _mean - _std * 70)
         ]
         temp2_df = train_data.loc[
-            (train_data[col] > _mean + _std * 35) |
-            (train_data[col] < _mean - _std * 35)
+            (train_data[col] > _mean + _std * 35)
+            | (train_data[col] < _mean - _std * 35)
         ]
         if len(temp_df) > 0:
             outliers = temp_df.index.to_list()
@@ -39,21 +40,21 @@ def drop_outliers(train_data):
 
 
 @click.command()
-@click.option('-i', '--input_filepath', type=click.Path(exists=True))
-@click.option('-o', '--output_filepath', type=click.Path())
+@click.option("-i", "--input_filepath", type=click.Path(exists=True))
+@click.option("-o", "--output_filepath", type=click.Path())
 def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    """Runs data processing scripts to turn raw data from (../raw) into
+    cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info("making final data set from raw data")
     train_data = read_data(input_filepath)
     train_data = drop_outliers(train_data)
     train_data.to_parquet(output_filepath, index=False, engine="pyarrow")
-    logger.info(f'final data were saved to {output_filepath}')
+    logger.info(f"final data were saved to {output_filepath}")
 
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+if __name__ == "__main__":
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     main()
