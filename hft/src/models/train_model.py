@@ -1,33 +1,53 @@
 import logging
+import os
 import pickle
 
 import click
 import numpy as np
 import pandas as pd
+from box import ConfigBox
 from lightgbm import LGBMRegressor
+from ruamel.yaml import YAML
 from sklearn.model_selection import StratifiedKFold
 
-seed = 8
-folds = 5
-target = "target"
+yaml = YAML(typ="safe")
 
 
 def save_models(models, models_filepath):
+    if not os.path.exists(models_filepath):
+        os.makedirs(models_filepath)
+
     for i, model in enumerate(models):
         with open(f"{models_filepath}/lgbm_{i}.pkl", "wb") as f:
             pickle.dump(model, f)
 
 
 @click.command()
-@click.option("-i", "--input_filepath", type=click.Path(exists=True))
-@click.option("-o", "--models_filepath", type=click.Path())
+@click.option(
+    "-i",
+    "--input_filepath",
+    default="data/processed/result.parquet",
+    type=click.Path(exists=True),
+)
+@click.option(
+    "-o",
+    "--models_filepath",
+    default="models",
+    type=click.Path(),
+)
 def main(input_filepath, models_filepath):
     logger = logging.getLogger(__name__)
     logger.info("start training LGBM models")
 
+    params = ConfigBox(yaml.load(open("params.yaml", encoding="utf-8")))
+
     train = pd.read_parquet(input_filepath)
     features = train.columns[4:]
-    skf = StratifiedKFold(folds, shuffle=True, random_state=seed)
+    skf = StratifiedKFold(
+        n_splits=params.train.folds,
+        shuffle=True,
+        random_state=params.train.seed,
+    )
     models = []
 
     for train_index, test_index in skf.split(train, train["investment_id"]):
@@ -46,9 +66,9 @@ def main(input_filepath, models_filepath):
 
         lgbm.fit(
             train_data[features],
-            train_data[target],
-            eval_set=(valid_data[features], valid_data[target]),
-            early_stopping_rounds=10,
+            train_data[params.train.target],
+            eval_set=(valid_data[features], valid_data[params.train.target]),
+            early_stopping_rounds=params.train.early_stopping_rounds,
         )
         models.append(lgbm)
     save_models(models, models_filepath)

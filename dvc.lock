@@ -1,0 +1,24 @@
+schema: '2.0'
+stages:
+  make_dataset:
+    cmd: python hft/src/data/make_dataset.py
+    deps:
+    - path: data/raw/train_data.parquet
+      md5: 3599bf5aa03c3ebbe31bc7906499ce98
+      size: 365277475
+    - path: hft/src/data/make_dataset.py
+      md5: ecd58bb8a2a10df29de3c474b8fc514e
+      size: 2112
+    outs:
+    - path: data/processed/result.parquet
+      md5: ea30d78320e4fc5c0674a7257e36967f
+      size: 365173413
+  train:
+    cmd: python hft/src/models/train_model.py
+    deps:
+    - path: data/processed/result.parquet
+      md5: ea30d78320e4fc5c0674a7257e36967f
+      size: 365173413
+    - path: hft/src/models/train_model.py
+      md5: 8e77036be7b90ab0dfc39a971ade7077
+      size: 2315
