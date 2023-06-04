@@ -40,8 +40,18 @@ def drop_outliers(train_data):
 
 
 @click.command()
-@click.option("-i", "--input_filepath", type=click.Path(exists=True))
-@click.option("-o", "--output_filepath", type=click.Path())
+@click.option(
+    "-i",
+    "--input_filepath",
+    default="data/raw/train_data.parquet",
+    type=click.Path(exists=True),
+)
+@click.option(
+    "-o",
+    "--output_filepath",
+    default="data/processed/result.parquet",
+    type=click.Path(),
+)
 def main(input_filepath, output_filepath):
     """Runs data processing scripts to turn raw data from (../raw) into
     cleaned data ready to be analyzed (saved in ../processed).

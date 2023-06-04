@@ -1,0 +1,5 @@
+train:
+  seed: 8
+  folds: 5
+  target: target
+  early_stopping_rounds: 10

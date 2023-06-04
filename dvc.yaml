@@ -1,0 +1,13 @@
+stages:
+  make_dataset:
+    cmd: python hft/src/data/make_dataset.py
+    deps:
+      - hft/src/data/make_dataset.py
+      - data/raw/train_data.parquet
+    outs:
+      - data/processed/result.parquet
+  train:
+    cmd: python hft/src/models/train_model.py
+    deps:
+      - hft/src/models/train_model.py
+      - data/processed/result.parquet
