@@ -1,5 +1,14 @@
+base:
+  exp_name: experiment1
+  raw_metrics_path: reports/raw_metrics.csv
 train:
   seed: 8
   folds: 5
   target: target
   early_stopping_rounds: 10
+  lbgm:
+    n_estimators: 1000
+    subsample_freq: 1
+    min_child_samples: 1000
+    num_leaves: 16
+    learning_rate: 0.03
