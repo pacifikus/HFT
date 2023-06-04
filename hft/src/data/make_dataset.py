@@ -43,13 +43,13 @@ def drop_outliers(train_data):
 @click.option(
     "-i",
     "--input_filepath",
-    default='data/raw/train_data.parquet',
+    default="data/raw/train_data.parquet",
     type=click.Path(exists=True),
 )
 @click.option(
     "-o",
     "--output_filepath",
-    default='data/processed/result.parquet',
+    default="data/processed/result.parquet",
     type=click.Path(),
 )
 def main(input_filepath, output_filepath):
